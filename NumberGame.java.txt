@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class GuessTheNumberApp {
 
-    // can tweak these later without touching the main logic
+ 
     private static final int MIN_VAL = 1;
     private static final int MAX_VAL = 100;
     private static final int MAX_TRIES = 7;
@@ -58,7 +58,7 @@ public class GuessTheNumberApp {
                 return true;
             }
 
-            // small hint
+
             if (guess < secret) {
                 System.out.println("Too low.");
             } else {
@@ -77,22 +77,22 @@ public class GuessTheNumberApp {
     }
 
     private static int generateTargetNumber() {
-        // keep the generator local; no need to share state
+        
         Random rnd = new Random();
         int bound = MAX_VAL - MIN_VAL + 1;
         return MIN_VAL + rnd.nextInt(bound);
     }
 
     private static int readGuess(Scanner in) {
-        // loop until we actually get an integer
+       
         while (true) {
             System.out.print("Enter your guess: ");
             if (in.hasNextInt()) {
                 int g = in.nextInt();
-                // optional: ignore clearly out-of-range guesses
+              
                 return g;
             } else {
-                // consume invalid token
+                
                 String bad = in.next();
                 System.out.println("'" + bad + "' is not a valid integer. Try again.");
             }
@@ -101,8 +101,9 @@ public class GuessTheNumberApp {
 
     private static boolean askToContinue(Scanner in) {
         System.out.print("Play another round? (y/n): ");
-        // simple yes/no; anything else treated as no
+        
         String ans = in.next().trim().toLowerCase();
         return ans.equals("y") || ans.equals("yes");
     }
 }
+

@@ -1,0 +1,149 @@
+import java.util.Scanner;
+
+class SimpleAccount {
+
+    private final String ownerName;
+    private double currentBalance;
+
+    public SimpleAccount(String ownerName, double initialAmount) {
+        this.ownerName = ownerName;
+        this.currentBalance = initialAmount < 0 ? 0.0 : initialAmount;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public double getCurrentBalance() {
+        return currentBalance;
+    }
+
+    public boolean putMoney(double amt) {
+        if (amt <= 0) {
+            return false;
+        }
+        currentBalance += amt;
+        return true;
+    }
+
+    public boolean takeMoney(double amt) {
+        if (amt <= 0) {
+            return false;
+        }
+        if (amt > currentBalance) {
+            return false;
+        }
+        currentBalance -= amt;
+        return true;
+    }
+}
+
+class ConsoleAtm {
+
+    private final SimpleAccount acc;
+    private final Scanner in;
+
+    public ConsoleAtm(SimpleAccount acc) {
+        this.acc = acc;
+        this.in = new Scanner(System.in);
+    }
+
+    public void run() {
+        System.out.println("Welcome, " + acc.getOwnerName());
+
+        boolean exit = false;
+        while (!exit) {
+            printMenu();
+            int choice = readIntChoice();
+
+            switch (choice) {
+                case 1:
+                    showBalance();
+                    break;
+                case 2:
+                    doDeposit();
+                    break;
+                case 3:
+                    doWithdraw();
+                    break;
+                case 4:
+                    System.out.println("Thank you for using the ATM.");
+                    exit = true;
+                    break;
+                default:
+                    System.out.println("Unknown option, please try again.");
+            }
+        }
+
+        in.close();
+    }
+
+    private void printMenu() {
+        System.out.println();
+        System.out.println("=== ATM MENU ===");
+        System.out.println("1) Check balance");
+        System.out.println("2) Deposit");
+        System.out.println("3) Withdraw");
+        System.out.println("4) Exit");
+        System.out.print("Select option: ");
+    }
+
+    private int readIntChoice() {
+        while (!in.hasNextInt()) {
+            System.out.print("Enter a valid number: ");
+            in.next(); // discard invalid
+        }
+        return in.nextInt();
+    }
+
+    private double readAmount() {
+        double val;
+        while (true) {
+            if (!in.hasNextDouble()) {
+                System.out.print("Please enter a numeric amount: ");
+                in.next();
+                continue;
+            }
+            val = in.nextDouble();
+            if (val > 0) {
+                return val;
+            }
+            System.out.print("Amount must be greater than zero. Try again: ");
+        }
+    }
+
+    private void showBalance() {
+        System.out.println("Current balance: " + acc.getCurrentBalance());
+    }
+
+    private void doDeposit() {
+        System.out.print("Amount to deposit: ");
+        double amt = readAmount();
+        boolean ok = acc.putMoney(amt);
+        if (ok) {
+            System.out.println("Deposit successful. New balance: " + acc.getCurrentBalance());
+        } else {
+            System.out.println("Deposit failed.");
+        }
+    }
+
+    private void doWithdraw() {
+        System.out.print("Amount to withdraw: ");
+        double amt = readAmount();
+        boolean ok = acc.takeMoney(amt);
+        if (ok) {
+            System.out.println("Withdrawal successful. New balance: " + acc.getCurrentBalance());
+        } else {
+            System.out.println("Withdrawal failed. Check your balance or amount.");
+        }
+    }
+}
+
+public class AtmRunner {
+
+    public static void main(String[] args) {
+        SimpleAccount demo = new SimpleAccount("Demo User", 5000.0);
+        ConsoleAtm atm = new ConsoleAtm(demo);
+        atm.run();
+    }
+}

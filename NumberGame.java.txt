@@ -1,0 +1,108 @@
+import java.util.Random;
+import java.util.Scanner;
+
+public class GuessTheNumberApp {
+
+    // can tweak these later without touching the main logic
+    private static final int MIN_VAL = 1;
+    private static final int MAX_VAL = 100;
+    private static final int MAX_TRIES = 7;
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        try {
+            runGame(in);
+        } finally {
+            in.close();
+        }
+    }
+
+    private static void runGame(Scanner in) {
+        System.out.println("=== NUMBER GUESSING GAME ===");
+
+        int totalRounds = 0;
+        int wins = 0;
+
+        boolean keepPlaying = true;
+        while (keepPlaying) {
+            totalRounds++;
+
+            boolean roundWon = playRound(in);
+            if (roundWon) {
+                wins++;
+            }
+
+            keepPlaying = askToContinue(in);
+        }
+
+        System.out.println();
+        System.out.println("=== GAME SUMMARY ===");
+        System.out.println("Rounds played : " + totalRounds);
+        System.out.println("Rounds won    : " + wins);
+    }
+
+    private static boolean playRound(Scanner in) {
+        int secret = generateTargetNumber();
+        int attemptsUsed = 0;
+
+        System.out.println();
+        System.out.println("I'm thinking of a number between " + MIN_VAL + " and " + MAX_VAL + ".");
+        System.out.println("You get " + MAX_TRIES + " attempts. Try your luck!");
+
+        while (attemptsUsed < MAX_TRIES) {
+            int guess = readGuess(in);
+            attemptsUsed++;
+
+            if (guess == secret) {
+                System.out.println("Nice! You guessed it in " + attemptsUsed + " attempt(s).");
+                return true;
+            }
+
+            // small hint
+            if (guess < secret) {
+                System.out.println("Too low.");
+            } else {
+                System.out.println("Too high.");
+            }
+
+            int left = MAX_TRIES - attemptsUsed;
+            if (left > 0) {
+                System.out.println("Attempts left: " + left);
+            } else {
+                System.out.println("Out of attempts. The number was: " + secret);
+            }
+        }
+
+        return false;
+    }
+
+    private static int generateTargetNumber() {
+        // keep the generator local; no need to share state
+        Random rnd = new Random();
+        int bound = MAX_VAL - MIN_VAL + 1;
+        return MIN_VAL + rnd.nextInt(bound);
+    }
+
+    private static int readGuess(Scanner in) {
+        // loop until we actually get an integer
+        while (true) {
+            System.out.print("Enter your guess: ");
+            if (in.hasNextInt()) {
+                int g = in.nextInt();
+                // optional: ignore clearly out-of-range guesses
+                return g;
+            } else {
+                // consume invalid token
+                String bad = in.next();
+                System.out.println("'" + bad + "' is not a valid integer. Try again.");
+            }
+        }
+    }
+
+    private static boolean askToContinue(Scanner in) {
+        System.out.print("Play another round? (y/n): ");
+        // simple yes/no; anything else treated as no
+        String ans = in.next().trim().toLowerCase();
+        return ans.equals("y") || ans.equals("yes");
+    }
+}

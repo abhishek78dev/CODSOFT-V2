@@ -1,0 +1,95 @@
+import java.util.Scanner;
+
+public class GradeTool {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        try {
+            System.out.println("=== STUDENT GRADE CALCULATOR ===");
+
+            int subjects = askSubjectCount(sc);
+            double sum = collectMarks(sc, subjects);
+
+            double avg = subjects == 0 ? 0.0 : sum / subjects;
+            char letter = mapToGrade(avg);
+
+            System.out.println();
+            System.out.println("=== RESULT ===");
+            System.out.println("Total Marks         : " + sum);
+            System.out.println("Average Percentage  : " + String.format("%.2f", avg) + "%");
+            System.out.println("Grade               : " + letter);
+        } finally {
+            sc.close();
+        }
+    }
+
+    private static int askSubjectCount(Scanner sc) {
+        System.out.print("Enter number of subjects: ");
+        int count;
+
+        while (true) {
+            if (!sc.hasNextInt()) {
+                System.out.print("Please enter a whole number: ");
+                sc.next(); // discard junk
+                continue;
+            }
+            count = sc.nextInt();
+            if (count > 0) {
+                break;
+            }
+            System.out.print("Value must be greater than 0. Try again: ");
+        }
+        return count;
+    }
+
+    private static double collectMarks(Scanner sc, int n) {
+        double total = 0.0;
+
+        for (int idx = 1; idx <= n; idx++) {
+            double m = readSingleMark(sc, idx);
+            total += m;
+        }
+
+        return total;
+    }
+
+    private static double readSingleMark(Scanner sc, int subjectIndex) {
+        double mark;
+
+        while (true) {
+            System.out.print("Enter marks for subject " + subjectIndex + " (0 - 100): ");
+
+            if (!sc.hasNextDouble()) {
+                System.out.print("Please enter a valid numeric value.\n");
+                sc.next(); // throw away invalid token
+                continue;
+            }
+
+            mark = sc.nextDouble();
+            if (mark >= 0.0 && mark <= 100.0) {
+                return mark;
+            }
+
+            System.out.println("Marks must be between 0 and 100. Try again.");
+        }
+    }
+
+    private static char mapToGrade(double pct) {
+        // simple ladder; easy to tweak the bands later
+        char g;
+        if (pct >= 90.0) {
+            g = 'A';
+        } else if (pct >= 80.0) {
+            g = 'B';
+        } else if (pct >= 70.0) {
+            g = 'C';
+        } else if (pct >= 60.0) {
+            g = 'D';
+        } else if (pct >= 50.0) {
+            g = 'E';
+        } else {
+            g = 'F';
+        }
+        return g;
+    }
+}

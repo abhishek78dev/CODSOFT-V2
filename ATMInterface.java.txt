@@ -1,0 +1,17 @@
+import java.util.Scanner;
+
+class SimpleAccount {
+    // ...
+}
+
+class ConsoleAtm {
+    // ...
+}
+
+public class AtmRunner {
+    public static void main(String[] args) {
+        SimpleAccount demo = new SimpleAccount("Demo User", 5000.0);
+        ConsoleAtm atm = new ConsoleAtm(demo);
+        atm.run();
+    }
+}

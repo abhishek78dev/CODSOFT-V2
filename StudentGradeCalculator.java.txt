@@ -75,7 +75,7 @@ public class GradeTool {
     }
 
     private static char mapToGrade(double pct) {
-        // simple ladder; easy to tweak the bands later
+        
         char g;
         if (pct >= 90.0) {
             g = 'A';
@@ -93,3 +93,4 @@ public class GradeTool {
         return g;
     }
 }
+
